@@ -1,1 +1,1 @@
-# nx-helper-llm
+# nx-helper
