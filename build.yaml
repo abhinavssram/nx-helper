@@ -1,0 +1,37 @@
+name: nx-helper
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      
+      - name: Set up image tag
+        id: vars
+        run: |
+          IMAGE_NAME=nx-helper
+          VERSION=${{ github.sha }}
+          echo "IMAGE_TAG=${IMAGE_NAME}-${VERSION}" >> $GITHUB_ENV
+
+      - name: Build docker image (versioned)
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/personal-projects:${{ env.IMAGE_TAG }} .
+
+      - name: Tag image as latest
+        run: docker tag ${{ secrets.DOCKER_USERNAME }}/personal-projects:${{ env.IMAGE_TAG }} ${{ secrets.DOCKER_USERNAME }}/personal-projects:${{ env.IMAGE_NAME }}-latest
+
+      - name: Push latest image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/personal-projects:${{ env.IMAGE_NAME }}-latest
