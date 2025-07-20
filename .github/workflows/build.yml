@@ -25,6 +25,7 @@ jobs:
         run: |
           IMAGE_NAME=nx-helper
           VERSION=${{ github.sha }}
+          echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
           echo "IMAGE_TAG=${IMAGE_NAME}-${VERSION}" >> $GITHUB_ENV
 
       - name: Build docker image (versioned)
