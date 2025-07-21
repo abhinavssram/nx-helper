@@ -60,16 +60,6 @@ You will be prompted to enter your questions about the Nx graph. Type `exit` to 
 
 ---
 
-## Example Questions
-- How many entities are present?
-- What are the types of entities and count of each type?
-- Can you tell me how many lib entities does sbv depend on?
-- Does sbv depend on core?
-- Are there any entities that enterprise-search depends on that are also depended on by other app or lib entities?
-- What are common lib entities between sbv and enterprise-search?
-
----
-
 ## Requirements
 - Python 3.8+
 - [langchain-anthropic](https://pypi.org/project/langchain-anthropic/)
