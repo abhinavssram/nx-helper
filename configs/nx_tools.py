@@ -56,10 +56,40 @@ def create_nx_tools(nx_helper: NXGraphHelper):
         result = nx_helper.check_if_dependent(source, target)
         return f"{source} {'depends on' if result else 'does NOT depend on'} {target}"
     
+    @tool
+    def find_all_paths_between_source_and_target(source: str, target: str) -> str:
+        """Find all paths from source to target entity and create a CSV file
+        Args:
+            source: The source entity string to start the path search from.
+            target: The target entity string to find paths to.
+        Returns:
+            A string representation of all paths found and CSV file creation status.
+        """
+        paths = nx_helper.find_all_paths_to_csv(source, target)
+        if not paths:
+            return f"No paths found from '{source}' to '{target}'. No CSV file created."
+        
+        # Format the response with path information
+        path_strings = []
+        for i, path in enumerate(paths, 1):
+            path_strings.append(f"Path {i}: {' -> '.join(path)}")
+        
+        csv_filename = f"path_{source}_{target}.csv"
+        
+        response = [
+            f"Found {len(paths)} path(s) from '{source}' to '{target}':",
+            "",
+            *path_strings,
+            "",
+            f"CSV file created: {csv_filename}"
+        ]
+        
+        return "\n".join(response)
     return [
         get_all_dependencies,
         get_dependencies_by_type,
         list_all_entities,
         get_dependents_by_type,
-        check_dependency_relationship
+        check_dependency_relationship,
+        find_all_paths_between_source_and_target
     ]

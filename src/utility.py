@@ -1,5 +1,7 @@
+import csv
 import json
 from pathlib import Path
+from typing import List
 from src.model import NXDependency, NXEntity, NXGraph
 
 def load_nx_graph_from_json(filepath: str) -> NXGraph:
@@ -36,6 +38,24 @@ def write_console_outputs(fileName: str, output_str: str):
     with open(file_path, "a") as f:
         f.write(output_str + "\n")    
 
+def write_csv_output(fileName: str, data: List[List[str]], headers: List[str]):
+    """
+    Write data to CSV file in the outputs directory
+    """
+    # Ensure the /outputs directory exists
+    output_dir = Path(__file__).parent.parent / "outputs"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # File path inside /outputs
+    file_path = output_dir / fileName
+
+    # Write to CSV file
+    with open(file_path, "w", newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        writer.writerow(headers)  # Write headers
+        writer.writerows(data)    # Write data rows
+    
+    print(f"CSV output written to {file_path}")
 # Access the objects
 # graph = load_nx_graph_from_json("../nx-output.json")
 
