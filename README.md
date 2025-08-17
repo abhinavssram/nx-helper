@@ -96,6 +96,15 @@ python nx_cli.py --check-dependency my-app core-lib
 # Find common dependencies
 python nx_cli.py --common-dependencies app1 app2
 
+# Get level-wise dependencies (BFS traversal)
+python nx_cli.py --level-wise-dependencies my-app
+
+# Get level-wise dependencies grouped by type
+python nx_cli.py --level-wise-typed my-app
+
+# Find all paths between entities (creates CSV)
+python nx_cli.py --find-paths my-app core-lib
+
 # Use custom graph file
 python nx_cli.py --graph-file /path/to/nx-output.json --list-entities
 ```
