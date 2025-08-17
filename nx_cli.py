@@ -45,6 +45,9 @@ Examples:
   python nx_cli.py --dependents core-lib
   python nx_cli.py --check-dependency my-app core-lib
   python nx_cli.py --common-dependencies app1 app2
+  python nx_cli.py --level-wise-dependencies my-app
+  python nx_cli.py --level-wise-typed my-app
+  python nx_cli.py --find-paths my-app core-lib
   python nx_cli.py --graph-file /path/to/nx-output.json --list-entities
         """
     )
@@ -97,6 +100,25 @@ Examples:
         help="Find common dependencies between two entities"
     )
     
+    group.add_argument(
+        "--level-wise-dependencies",
+        metavar="ENTITY",
+        help="Get dependencies organized by levels (BFS traversal)"
+    )
+    
+    group.add_argument(
+        "--level-wise-typed",
+        metavar="ENTITY",
+        help="Get level-wise dependencies grouped by type at each level"
+    )
+    
+    group.add_argument(
+        "--find-paths",
+        nargs=2,
+        metavar=("SOURCE", "TARGET"),
+        help="Find all paths from source to target (creates CSV file)"
+    )
+    
     args = parser.parse_args()
     
     try:
@@ -131,6 +153,33 @@ Examples:
             entity1, entity2 = args.common_dependencies
             common = nx_helper.find_common_dependencies(entity1, entity2)
             print_formatted_dict(common, f"Common dependencies between '{entity1}' and '{entity2}'")
+            
+        elif args.level_wise_dependencies:
+            level_deps = nx_helper.level_wise_dependencies(args.level_wise_dependencies)
+            print(f"\nLevel-wise Dependencies for '{args.level_wise_dependencies}':")
+            for level, deps in level_deps.items():
+                print(f"  Level {level} ({len(deps)}): {', '.join(deps)}")
+                
+        elif args.level_wise_typed:
+            typed_deps = nx_helper.level_wise_dependencies_with_types(args.level_wise_typed)
+            print(f"\nLevel-wise Dependencies with Types for '{args.level_wise_typed}':")
+            for level, type_dict in typed_deps.items():
+                print(f"  Level {level}:")
+                for dep_type, deps in type_dict.items():
+                    print(f"    {dep_type} ({len(deps)}): {', '.join(deps)}")
+                    
+        elif args.find_paths:
+            source, target = args.find_paths
+            paths = nx_helper.find_all_paths_to_csv(source, target)
+            if paths:
+                print(f"\nFound {len(paths)} path(s) from '{source}' to '{target}':")
+                for i, path in enumerate(paths[:5], 1):  # Show first 5 paths
+                    print(f"  Path {i}: {' -> '.join(path)}")
+                if len(paths) > 5:
+                    print(f"  ... and {len(paths) - 5} more paths")
+                print(f"\nComplete results saved to CSV file: path_{source}_{target}.csv")
+            else:
+                print(f"\nNo paths found from '{source}' to '{target}'")
             
     except FileNotFoundError:
         print(f"Error: Graph file '{args.graph_file}' not found")
