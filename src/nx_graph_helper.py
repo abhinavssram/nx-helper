@@ -126,3 +126,21 @@ class NXGraphHelper:
                 if self._check_if_dependent_dfs(dep.target, target, visited):
                     return True
         return False
+
+    def find_common_dependencies(self, entity1: str, entity2: str) -> Dict[str, List[str]]:
+        """Find common dependencies between two entities, grouped by type"""
+        deps1 = set(self.dfs_dependencies(entity1))
+        deps2 = set(self.dfs_dependencies(entity2))
+        common_deps = deps1.intersection(deps2)
+        
+        grouped = defaultdict(list)
+        for dep in common_deps:
+            type_ = self.entity_type_map.get(dep, "unknown")
+            grouped[type_].append(dep)
+        
+        output = [f"Common dependencies between '{entity1}' and '{entity2}':"]
+        for type_, deps in grouped.items():
+            output.append(f"{type_} ({len(deps)}): {deps}")
+        
+        write_console_outputs("common_dependencies.txt", "\n".join(output))
+        return dict(grouped)

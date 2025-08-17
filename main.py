@@ -8,6 +8,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 import json
 import os
+import sys
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -41,8 +42,11 @@ def should_use_tools(query, llm):
     return response.content.strip().upper() == "YES"
 
 def debug_main():
+    # Get graph file path from command line or use default
+    graph_file = sys.argv[1] if len(sys.argv) > 1 else "nx-output.json"
+    
     # Load and setup
-    graph = load_nx_graph_from_json("../nx-output.json")
+    graph = load_nx_graph_from_json(graph_file)
     nx_helper = NXGraphHelper(graph)
     tools = create_nx_tools(nx_helper)
     tool_executor = ToolExecutor(tools)

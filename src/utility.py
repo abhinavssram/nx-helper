@@ -3,7 +3,7 @@ from pathlib import Path
 from src.model import NXDependency, NXEntity, NXGraph
 
 def load_nx_graph_from_json(filepath: str) -> NXGraph:
-    path = Path(__file__).parent / filepath
+    path = Path(filepath) if Path(filepath).is_absolute() else Path(__file__).parent.parent / filepath
     with path.open("r") as f:
         data = json.load(f)
 

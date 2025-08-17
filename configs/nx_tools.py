@@ -56,10 +56,22 @@ def create_nx_tools(nx_helper: NXGraphHelper):
         result = nx_helper.check_if_dependent(source, target)
         return f"{source} {'depends on' if result else 'does NOT depend on'} {target}"
     
+    @tool
+    def find_common_dependencies(entity1: str, entity2: str) -> str:
+        """Find common dependencies between two entities
+        Args:
+            entity1: The first entity string.
+            entity2: The second entity string.
+        Returns:
+            A string representation of common dependencies grouped by type.
+        """
+        return str(nx_helper.find_common_dependencies(entity1, entity2))
+    
     return [
         get_all_dependencies,
         get_dependencies_by_type,
         list_all_entities,
         get_dependents_by_type,
-        check_dependency_relationship
+        check_dependency_relationship,
+        find_common_dependencies
     ]
