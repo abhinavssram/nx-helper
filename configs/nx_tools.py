@@ -67,11 +67,63 @@ def create_nx_tools(nx_helper: NXGraphHelper):
         """
         return str(nx_helper.find_common_dependencies(entity1, entity2))
     
+    @tool
+    def find_all_paths_between_source_and_target(source: str, target: str) -> str:
+        """Find all paths from source to target entity and create a CSV file
+        Args:
+            source: The source entity string to start the path search from.
+            target: The target entity string to find paths to.
+        Returns:
+            A string representation of all paths found and CSV file creation status.
+        """
+        paths = nx_helper.find_all_paths_to_csv(source, target)
+        if not paths:
+            return f"No paths found from '{source}' to '{target}'. No CSV file created."
+        
+        # Format the response with path information
+        path_strings = []
+        for i, path in enumerate(paths, 1):
+            path_strings.append(f"Path {i}: {' -> '.join(path)}")
+        
+        csv_filename = f"path_{source}_{target}.csv"
+        
+        response = [
+            f"Found {len(paths)} path(s) from '{source}' to '{target}':",
+            "",
+            *path_strings,
+            "",
+            f"CSV file created: {csv_filename}"
+        ]
+        
+        return "\n".join(response)
+    
+    @tool
+    def get_level_wise_dependencies(entity: str) -> str:
+        """Get dependencies organized by levels (BFS traversal)
+        Args:
+            entity: The entity string to get level-wise dependencies of.
+        Returns:
+            A string representation of dependencies organized by levels.
+        """
+        return str(nx_helper.level_wise_dependencies(entity))
+    
+    @tool
+    def get_level_wise_dependencies_with_types(entity: str) -> str:
+        """Get level-wise dependencies grouped by type at each level
+        Args:
+            entity: The entity string to get typed level-wise dependencies of.
+        Returns:
+            A string representation of level-wise dependencies grouped by type.
+        """
+        return str(nx_helper.level_wise_dependencies_with_types(entity))
     return [
         get_all_dependencies,
         get_dependencies_by_type,
         list_all_entities,
         get_dependents_by_type,
         check_dependency_relationship,
-        find_common_dependencies
+        find_common_dependencies,
+        find_all_paths_between_source_and_target,
+        get_level_wise_dependencies,
+        get_level_wise_dependencies_with_types
     ]

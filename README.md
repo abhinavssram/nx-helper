@@ -111,6 +111,8 @@ python nx_cli.py --graph-file /path/to/nx-output.json --list-entities
 - Does sbv depend on core?
 - Are there any entities that enterprise-search depends on that are also depended on by other app or lib entities?
 - What are common lib entities between sbv and enterprise-search?
+- Show me level-wise dependencies of my-app
+- Find all paths from app1 to core-lib
 
 ### CLI Interface Command Examples:
 See the Usage section above for direct CLI commands that accomplish the same tasks.
